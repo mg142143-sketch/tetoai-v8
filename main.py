@@ -1,26 +1,28 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from transformers import pipeline
 
 app = FastAPI()
-
-brain = pipeline("text-generation", model="distilgpt2")
 
 memory = []
 
 class Input(BaseModel):
     text: str
 
+@app.get("/")
+def home():
+    return {"status": "TetoAI is running"}
 
 @app.post("/chat")
 def chat(data: Input):
-
     memory.append(data.text)
 
-    prompt = "User: " + data.text + "\nAI:"
+    user_text = data.text.strip()
 
-    out = brain(prompt, max_new_tokens=60, temperature=0.7)
-
-    reply = out[0]["generated_text"].split("AI:")[-1].strip()
+    if "hello" in user_text.lower():
+        reply = "Hello! It's nice to talk with you."
+    elif "how are you" in user_text.lower():
+        reply = "I'm doing well and ready to chat."
+    else:
+        reply = f"You said: {user_text}"
 
     return {"reply": reply}
