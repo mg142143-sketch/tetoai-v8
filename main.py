@@ -6,7 +6,12 @@ import os
 
 app = FastAPI()
 
-brain = pipeline("text-generation", model="gpt2")
+from transformers import pipeline
+
+brain = pipeline(
+    "text-generation",
+    model="distilgpt2"
+)
 
 MEM_FILE = "memory.json"
 
